@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>レッサーパンダスタンプラリー</title>
+
+<style>
+body {
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  background-color: #f7f9fa;
+  margin: 0;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.container {
+  max-width: 360px;
+  width: 100%;
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  box-sizing: border-box;
+  text-align: center;
+}
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0;
+  width: 280px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+.slot {
+  aspect-ratio: 1 / 1;
+  background-color: #edf2f7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.slot::before {
+  content: "？";
+  color: #a0aec0;
+  font-size: 24px;
+  font-weight: bold;
+}
+.slot.active::before {
+  display: none;
+}
+.slot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+#complete-zone {
+  display: none;
+  padding: 20px;
+  border-radius: 12px;
+  background: #fff5f5;
+  border: 3px dashed #e53e3e;
+}
+.complete-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #c53030;
+  margin-bottom: 15px;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<h1>レッサーパンダスタンプラリー 🐾</h1>
+<p class="subtitle">4つのスタンプを集めてレッサーパンダを完成させよう！</p>
+
+<div class="grid-container">
+  <div class="slot" id="slot1"></div>
+  <div class="slot" id="slot2"></div>
+  <div class="slot" id="slot3"></div>
+  <div class="slot" id="slot4"></div>
+</div>
+
+<div id="info-box">
+  QRコードを読み取ると、ここにピースがはまるよ！
+</div>
+
+<div id="complete-zone">
+  <p class="complete-title">🎉パズル完成！おめでとう！🎉</p>
+</div>
+
+</div>
+
+<script>
+const urlParams = new URLSearchParams(window.location.search);
+const currentId = urlParams.get('id');
+
+// 保存されたスタンプを読み込む
+let myStamps = JSON.parse(localStorage.getItem('lesser_rally')) || [];
+
+// 新しいIDがあれば追加して保存
+if (currentId && ['1','2','3','4'].includes(currentId)) {
+  if (!myStamps.includes(currentId)) {
+    myStamps.push(currentId);
+    localStorage.setItem('lesser_rally', JSON.stringify(myStamps));
+  }
+}
+
+// 画像ファイル名
+const images = {
+  1: "lesser1.png",
+  2: "lesser2.png",
+  3: "lesser3.png",
+  4: "lesser4.png"
+};
+
+// ピースを表示する
+myStamps.forEach(id => {
+  const slot = document.getElementById(`slot${id}`);
+  if (slot) {
+    slot.classList.add("active");
+    const img = document.createElement("img");
+    img.src = images[id];
+    slot.appendChild(img);
+  }
+});
+
+// 4つ揃ったら完成メッセージを表示（昨日と同じ仕様）
+if (myStamps.length === 4) {
+  document.getElementById("info-box").style.display = "none";
+  document.getElementById("complete-zone").style.display = "block";
+}
+</script>
+
+</body>
+</html>
